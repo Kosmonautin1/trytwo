@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktiver Weihnachtskalender - Testversion</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom, #2e3b55, #1c262f);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        h1 {
+            margin-bottom: 20px;
+            text-align: center;
+            color: #ffecd2;
+        }
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            width: 90%;
+            max-width: 800px;
+        }
+        .door {
+            width: 100%;
+            padding-top: 100%;
+            position: relative;
+            background: url('https://www.transparenttextures.com/patterns/wood.png') center/cover;
+            border: 2px solid #ab734f;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .door.locked {
+            cursor: not-allowed;
+            background: #444;
+            border-color: #666;
+        }
+        .door.opened {
+            background: #ffd700;
+            cursor: default;
+        }
+        .door-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 1px 2px black;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        .door.locked .door-content {
+            background: rgba(0, 0, 0, 0.8);
+        }
+        .light-effect {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,224,0.9), rgba(255,223,128,0.1));
+            pointer-events: none;
+            opacity: 0;
+            animation: shine 1s ease-out forwards;
+        }
+        @keyframes shine {
+            from {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(0);
+            }
+            to {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(3);
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>🎄 Interaktiver Weihnachtskalender - Testversion 🎄</h1>
+    <div class="calendar" id="calendar"></div>
+    <script>
+        const calendar = document.getElementById('calendar');
+        const today = new Date().getDate();
+
+        const spotifyLinks = [
+            "https://open.spotify.com/intl-de/track/2l0HUz1Tt8UlZf1GSzaQjN?si=574f9764599e4e32" // Test link for the first day
+        ];
+
+        for (let day = 1; day <= 24; day++) {
+            const door = document.createElement('div');
+            door.className = 'door';
+            if (day > today) door.classList.add('locked');
+
+            const doorContent = document.createElement('div');
+            doorContent.className = 'door-content';
+            doorContent.textContent = day;
+
+            door.appendChild(doorContent);
+            door.addEventListener('click', () => {
+                if (door.classList.contains('locked') || door.classList.contains('opened')) return;
+                door.classList.add('opened');
+                const effect = document.createElement('div');
+                effect.className = 'light-effect';
+                door.appendChild(effect);
+                setTimeout(() => {
+                    window.open(spotifyLinks[0], '_blank'); // Opens the test Spotify link
+                }, 500);
+            });
+            calendar.appendChild(door);
+
+            if (day === 1) break; // Add only the test door for now
+        }
+    </script>
+</body>
+</html>
